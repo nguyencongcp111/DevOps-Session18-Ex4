@@ -55,7 +55,10 @@ services:
         condition: service_started
       logstash:
         condition: service_started
+    volumes:
+      - ./logs/order-service:/app/logs
     environment:
+      STORX_LOG_MAX_FILE_SIZE: ${LOG_MAX_FILE_SIZE:-10MB}
       DB_HOST: postgres
       DB_NAME: orderdb
       USER_SERVICE_URL: http://user-service:8081

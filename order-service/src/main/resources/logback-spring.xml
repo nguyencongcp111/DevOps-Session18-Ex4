@@ -2,6 +2,7 @@
     <springProperty scope="context" name="APP_NAME" source="spring.application.name" defaultValue="storex"/>
     <springProperty scope="context" name="APP_ENV" source="storex.env" defaultValue="dev"/>
     <springProperty scope="context" name="LOGSTASH_DEST" source="storex.logstash.destination" defaultValue="localhost:5000"/>
+    <springProperty scope="context" name="LOG_MAX_FILE_SIZE" source="storex.log.max-file-size" defaultValue="10MB"/>
 
     <!-- Console: dang plaintext de doc bang docker logs. requestId (tu MDC) dung o dau moi dong -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -23,5 +24,19 @@
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="LOGSTASH"/>
+        <appender-ref ref="FILE"/>
     </root>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/application.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/application-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>${LOG_MAX_FILE_SIZE}</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d %p %logger{36} [%t] %m%n</pattern>
+        </encoder>
+    </appender>
 </configuration>
